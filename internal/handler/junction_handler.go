@@ -2,6 +2,7 @@ package handler
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 
 	"github.com/google/uuid"
@@ -83,6 +84,25 @@ func NewJunctionHandler(js domain.JunctionService) *JunctionHandler {
 	return &JunctionHandler{service: js}
 }
 
+func (h *JunctionHandler) HandleJunction(w http.ResponseWriter, r *http.Request) {
+	cmd := r.URL.Query().Get("cmd")
+
+	log.Println("Command: ", cmd)
+
+	switch cmd {
+	case "create":
+		h.CreateJunction(w, r)
+	case "get":
+		h.GetJunction(w, r)
+	case "list":
+		h.ListJunctions(w, r)
+	case "delete":
+		h.DeleteJunction(w, r)
+	default:
+		http.Error(w, "invalid command", http.StatusBadRequest)
+	}
+}
+
 func (jh JunctionHandler) CreateJunction(w http.ResponseWriter, r *http.Request) {
 
 	if r.Method != http.MethodPost {
@@ -144,6 +164,8 @@ func (jh JunctionHandler) GetJunction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	idStr := r.URL.Query().Get("id")
+
+	log.Println("ID: ", idStr)
 
 	id, err := uuid.Parse(idStr)
 	if err != nil {

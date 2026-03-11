@@ -3,13 +3,10 @@ package service
 import (
 	"context"
 	"errors"
-	"log"
 
 	"github.com/google/uuid"
 	"github.com/srq/signalflux/internal/domain"
 )
-
-
 
 type junctionService struct {
 	junctionRepo domain.JunctionRepository
@@ -73,9 +70,7 @@ func (js junctionService) Delete(ctx context.Context, id uuid.UUID) error {
 
 func (js junctionService) GetSignals(ctx context.Context, id uuid.UUID) ([]domain.Signal, error) {
 
-	j, err := js.junctionRepo.GetByID(ctx, id)
-
-	log.Println(j)
+	_, err := js.junctionRepo.GetByID(ctx, id)
 	if err != nil {
 		return nil, err
 	}
